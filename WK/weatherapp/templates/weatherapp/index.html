@@ -1,0 +1,210 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --white: #ffffff;
+        --off-white: #e5e5e5;
+        --transp-white-1: rgba(255, 255, 255, 0.25);
+        --transp-white-2: rgba(255, 255, 255, 0.18);
+        --blue-1: #62b8f5;
+        --blue-2: #4475ef;
+        --shadow: rgba(3, 46, 87, 0.2);
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+      
+      body {
+        background-image: url('https://images.pexels.com/photos/3008509/pexels-photo-3008509.jpeg?auto=compress&cs=tinysrgb&w=1600');
+        background-size: cover;
+        background-repeat: no-repeat;
+        margin: 0;
+      }
+      
+      h1 {
+        text-align: center;
+        color: rgb(5, 41, 51);
+        margin-bottom: 15px;
+      }
+      
+      h2 {
+        font-size: 2rem;
+      }
+      
+      form {
+        display: grid;
+        grid-template-columns: 72% 25%;
+        grid-gap: 3%;
+      }
+      
+      .container {
+        width: 50%;
+        background: var(--transp-white-2);
+        backdrop-filter: blur(10px);
+        margin: 5rem auto;
+        padding: 2rem;
+        border: 2px solid var(--transp-white-2);
+        border-radius: 10px;
+        color: rgb(5, 41, 51);
+        height: 600px;
+      }
+      
+      input,
+      .btn::placeholder {
+        background-color: transparent;
+        padding: 0.5rem;
+        border-radius: 10px;
+        outline: none;
+        border: 1px solid white;
+      }
+      
+      .btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid #04009a;
+        cursor: pointer;
+        transition: 0.3s;
+        color: var(--blue-2);
+        background-color: transparent;
+        border-radius: 0.3em;
+      }
+      
+      .btn:hover {
+        transform: translateY(-3px);
+        background-color: rgb(5, 41, 51);
+        color: #fff;
+      }
+      
+      .weather {
+        margin-top: 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 200px;
+      }
+      
+      .left {
+        width: 100%;
+        padding: 0.3rem;
+        padding-bottom: 0;
+        border-radius: 10px 0 0 10px;
+        height: 220px;
+        line-height: 3;
+        text-transform: uppercase;
+        background: var(--transp-white-2);
+        backdrop-filter: blur(10px);
+      }
+      
+      .temp {
+        text-align: center;
+        margin-top: 15px;
+      }
+      
+      .city {
+        margin-top: -22px;
+        text-align: center;
+      }
+      
+      .right {
+        text-align: center;
+        height: 220px;
+        width: 100%;
+        border-radius: 0 10px 10px 0;
+        line-height: 2.5;
+        background: var(--transp-white-2);
+        backdrop-filter: blur(10px);
+      }
+      
+      .icon {
+        height: 85px;
+        padding: 0.5rem;
+        border-radius: 0 10px 0 0;
+        color: #04009a;
+      }
+      
+      .condition {
+        height: 135px;
+        color: rgb(5, 41, 51);
+        font-size: 20px;
+      }
+      
+      @media only screen and (max-width: 1000px) {
+        .container {
+          width: 80%;
+        }
+      }
+      
+      @media only screen and (max-width: 700px) {
+        .weather {
+          flex-direction: column;
+          height: auto;
+        }
+      
+        .container {
+          text-align: center;
+          width: 90%;
+          height: auto;
+        }
+      
+        .right {
+          margin-top: 0.5rem;
+          margin-left: 0;
+        }
+      
+        form {
+          grid-template-columns: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body style="background-image: url('{% if exception_occurred %}
+      https://images.pexels.com/photos/3008509/pexels-photo-3008509.jpeg?auto=compress&cs=tinysrgb&w=1600
+    {% else %}
+      {{ image_url }}
+    {% endif %}');">
+    <div class="container">
+      <h1 class="heading">Weather App</h1>
+      <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="city" placeholder="Enter City" />
+        <button type="submit" class="btn">Search</button>
+      </form>
+      <div class="weather">
+        <div class="left">
+          <h2 class="temp">{{ temp }}&#176; C</h2>
+          <h2 class="city">{{ city }}</h2>
+        </div>
+        <div class="right">
+          <div class="icon">
+            <p>
+              <img src="http://openweathermap.org/img/w/{{ icon }}.png" width="120px" />
+            </p>
+          </div>
+          <div class="condition">
+            <p>{{ description }}</p>
+            <p>{{ day }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if exception_occurred %}
+      <script>
+        window.onload = function () {
+          alert('City information is not available to Weather API')
+        }
+      </script>
+    {% endif %}
+  </body>
+</html>
